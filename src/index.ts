@@ -10,8 +10,7 @@ import { error, log } from './log';
 
   try {
     const config = await loadConfig();
-    const gitRoot = git.getRoot(config.gitRoot);
-    const branch = git.getBranchName(gitRoot);
+    const branch = git.getBranchName();
 
     const ignored = new RegExp(config.ignoredBranchesPattern || '^$', 'i');
 
@@ -22,7 +21,7 @@ import { error, log } from './log';
 
     const ticket = git.getJiraTicket(branch, config);
 
-    if (ticket === null) {
+    if (!ticket) {
       if (config.ignoreBranchesMissingTickets) {
         log('The branch does not contain a JIRA ticket and is ignored by the configuration rule');
       } else {

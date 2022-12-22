@@ -15,26 +15,17 @@ interface CommitMessageToTest {
 
 const singleScopeMessage: CommitMessageToTest = {
   initialMessage: ['chore(deps): Finally solved that problem!'],
-  expectedMessage: 'chore(deps): [JIRA-4321]. Finally solved that problem!',
-  config: {
-    isConventionalCommit: true,
-  },
+  expectedMessage: 'chore(deps, JIRA-4321): Finally solved that problem!',
 };
 
 const hyphenatedScopeMessage: CommitMessageToTest = {
   initialMessage: ['feat(new-service): Finally solved that problem!'],
-  expectedMessage: 'feat(new-service): [JIRA-4321]. Finally solved that problem!',
-  config: {
-    isConventionalCommit: true,
-  },
+  expectedMessage: 'feat(new-service, JIRA-4321): Finally solved that problem!',
 };
 
 const firstLineWithCommentMessage: CommitMessageToTest = {
   initialMessage: ['# This line is comment', 'chore(fix): Finally solved that problem!'],
-  expectedMessage: 'chore(fix): [JIRA-4321]. Finally solved that problem!',
-  config: {
-    isConventionalCommit: true,
-  },
+  expectedMessage: 'chore(fix, JIRA-4321): Finally solved that problem!',
 };
 
 const imitateVerboseCommit: CommitMessageToTest = {
@@ -49,39 +40,20 @@ const imitateVerboseCommit: CommitMessageToTest = {
     '# Changes to be committed:',
     '# ------------------------ >8 ------------------------',
   ],
-  expectedMessage: '[JIRA-4321].',
+  expectedMessage: 'chore(JIRA-4321): wip',
   config: {
     allowEmptyCommitMessage: true,
-    isConventionalCommit: false,
-  }
+  },
 };
 
 const conventionalCommitIncludesTicket = {
-  initialMessage: ['feat: [JIRA-4321] Finally solved that problem!'],
-  expectedMessage: 'feat: [JIRA-4321] Finally solved that problem!',
-  config: {
-    isConventionalCommit: true,
-  },
+  initialMessage: ['feat(JIRA-4321): Finally solved that problem!'],
+  expectedMessage: 'feat(JIRA-4321): Finally solved that problem!',
 };
 
-const gitRootIsSet = {
+const conventionalCommitWithoutScope = {
   initialMessage: ['feat: Finally solved that problem!'],
-  expectedMessage: 'feat: [JIRA-4321]. Finally solved that problem!',
-  config: {
-    isConventionalCommit: true,
-    messagePattern: '[$J]. $M',
-    gitRoot: './.git',
-  },
-};
-
-const allowReplaceAllOccurrencesIsSet = {
-  initialMessage: ['feat(multiple): Finally solved that problem!'],
-  expectedMessage: 'feat(multiple): [JIRA-4321] [Finally solved that problem!]. (JIRA-4321) Finally solved that problem!',
-  config: {
-    allowReplaceAllOccurrences: true,
-    messagePattern: '[$J] [$M]. ($J) $M',
-    isConventionalCommit: true,
-  },
+  expectedMessage: 'feat(JIRA-4321): Finally solved that problem!',
 };
 
 const ignoredBranchesPatternIsSet = {
@@ -92,36 +64,30 @@ const ignoredBranchesPatternIsSet = {
   },
   config: {
     ignoredBranchesPattern: '^JIRA-4321-test-husky\\d$',
-    isConventionalCommit: true,
   },
 };
 
 const ignoredBranchesPatternIsSet2 = {
   initialMessage: ['feat(ignorebranches): Finally solved that problem!'],
-  expectedMessage: 'feat(ignorebranches): [JIRA-4321]. Finally solved that problem!',
+  expectedMessage: 'feat(ignorebranches, JIRA-4321): Finally solved that problem!',
   options: {
     isBranchIgnored: false,
   },
   config: {
     ignoredBranchesPattern: '^develop$',
-    isConventionalCommit: true,
   },
 };
 
 const conventionalCommitIncludesMultipleScope = {
   initialMessage: ['feat(scope1,scope2.scope3, scope4, scope_5): Finally solved that problem!'],
-  expectedMessage: 'feat(scope1,scope2.scope3, scope4, scope_5): [JIRA-4321]. Finally solved that problem!',
-  config: {
-    isConventionalCommit: true,
-  },
+  expectedMessage: 'feat(scope1,scope2.scope3, scope4, scope_5, JIRA-4321): Finally solved that problem!',
 };
 
 const conventionalCommitPattern = {
   initialMessage: ['feat(Scope1!, Scope2?): Finally solved that problem!'],
-  expectedMessage: 'feat(Scope1!, Scope2?): [JIRA-4321]. Finally solved that problem!',
+  expectedMessage: 'feat(Scope1!, Scope2?, JIRA-4321): Finally solved that problem!',
   config: {
-    isConventionalCommit: true,
-    conventionalCommitPattern: "^([a-z]+)(\\([a-zA-Z0-9.,-_ !?]+\\))?!?: ([\\w \\S]+)$"
+    conventionalCommitPattern: '^([a-z]+)(?:\\(([a-zA-Z0-9.,-_ !?]+)\\))?!?: ([\\w \\S]+)$',
   },
 };
 
@@ -172,9 +138,13 @@ async function testCommitMessage(
   await exec(`git commit --cleanup=strip ${commitMsg}`, cwd, t);
 
   const stdout = await exec('git log', cwd, t);
-  const index = stdout.search(/(\[[A-Z]+-\d+])/i);
+  const index = stdout.search(/([A-Z]{4}-\d{4})/i);
   if (commitMessageToTest.options?.isBranchIgnored) {
-    t.is(index > -1, false, `Log contains JIRA ticket, but shouldn't. Expected message: ${commitMessageToTest.expectedMessage}`);
+    t.is(
+      index > -1,
+      false,
+      `Log contains JIRA ticket, but shouldn't. Expected message: ${commitMessageToTest.expectedMessage}`,
+    );
   } else {
     t.is(index > -1, true, `Log doesn't contain JIRA ticket. Expected message: ${commitMessageToTest.expectedMessage}`);
   }
@@ -192,8 +162,7 @@ test('husky2 JIRA ticket ID should be in commit message', async (t: ExecutionCon
   await testCommitMessage(firstLineWithCommentMessage, 'husky2', t);
   await testCommitMessage(imitateVerboseCommit, 'husky2', t);
   await testCommitMessage(conventionalCommitIncludesTicket, 'husky2', t);
-  await testCommitMessage(gitRootIsSet, 'husky2', t);
-  await testCommitMessage(allowReplaceAllOccurrencesIsSet, 'husky2', t);
+  await testCommitMessage(conventionalCommitWithoutScope, 'husky2', t);
   await testCommitMessage(ignoredBranchesPatternIsSet, 'husky2', t);
   await testCommitMessage(ignoredBranchesPatternIsSet2, 'husky2', t);
   await testCommitMessage(conventionalCommitIncludesMultipleScope, 'husky2', t);
@@ -206,8 +175,7 @@ test('husky3 JIRA ticket ID should be in commit message', async (t: ExecutionCon
   await testCommitMessage(firstLineWithCommentMessage, 'husky3', t);
   await testCommitMessage(imitateVerboseCommit, 'husky3', t);
   await testCommitMessage(conventionalCommitIncludesTicket, 'husky3', t);
-  await testCommitMessage(gitRootIsSet, 'husky3', t);
-  await testCommitMessage(allowReplaceAllOccurrencesIsSet, 'husky3', t);
+  await testCommitMessage(conventionalCommitWithoutScope, 'husky3', t);
   await testCommitMessage(ignoredBranchesPatternIsSet, 'husky3', t);
   await testCommitMessage(ignoredBranchesPatternIsSet2, 'husky3', t);
   await testCommitMessage(conventionalCommitIncludesMultipleScope, 'husky3', t);
@@ -220,8 +188,7 @@ test('husky4 JIRA ticket ID should be in commit message', async (t: ExecutionCon
   await testCommitMessage(firstLineWithCommentMessage, 'husky4', t);
   await testCommitMessage(imitateVerboseCommit, 'husky4', t);
   await testCommitMessage(conventionalCommitIncludesTicket, 'husky4', t);
-  await testCommitMessage(gitRootIsSet, 'husky4', t);
-  await testCommitMessage(allowReplaceAllOccurrencesIsSet, 'husky4', t);
+  await testCommitMessage(conventionalCommitWithoutScope, 'husky4', t);
   await testCommitMessage(ignoredBranchesPatternIsSet, 'husky4', t);
   await testCommitMessage(ignoredBranchesPatternIsSet2, 'husky4', t);
   await testCommitMessage(conventionalCommitIncludesMultipleScope, 'husky4', t);
@@ -234,8 +201,7 @@ test('husky5 JIRA ticket ID should be in commit message', async (t: ExecutionCon
   await testCommitMessage(firstLineWithCommentMessage, 'husky5', t);
   await testCommitMessage(imitateVerboseCommit, 'husky5', t);
   await testCommitMessage(conventionalCommitIncludesTicket, 'husky5', t);
-  await testCommitMessage(gitRootIsSet, 'husky5', t);
-  await testCommitMessage(allowReplaceAllOccurrencesIsSet, 'husky5', t);
+  await testCommitMessage(conventionalCommitWithoutScope, 'husky5', t);
   await testCommitMessage(ignoredBranchesPatternIsSet, 'husky5', t);
   await testCommitMessage(ignoredBranchesPatternIsSet2, 'husky5', t);
   await testCommitMessage(conventionalCommitIncludesMultipleScope, 'husky5', t);

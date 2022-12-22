@@ -1,8 +1,12 @@
 {
-  "name": "jira-prepare-commit-msg",
-  "version": "1.7.1",
-  "description": "Husky Git hook to add JIRA ticket ID into the commit message",
+  "name": "jira-prepare-conventional-commit-msg",
+  "version": "1.0.0",
+  "description": "Husky Git hook to add JIRA ticket ID into the scope of conventional commit message",
   "author": "Dmitry Shilov",
+  "contributors": [
+    "Dmitry Shilov",
+    "Victor Korzunin"
+  ],
   "bin": "./bin/index.js",
   "keywords": [
     "husky",
@@ -10,15 +14,16 @@
     "hook",
     "hooks",
     "prepare",
+    "conventional",
     "commit",
     "message",
     "msg"
   ],
-  "homepage": "https://github.com/bk201-/jira-prepare-commit-msg",
-  "bugs": "https://github.com/bk201-/jira-prepare-commit-msg/issues",
+  "homepage": "https://github.com/floydspace/jira-prepare-conventional-commit-msg",
+  "bugs": "https://github.com/floydspace/jira-prepare-conventional-commit-msg/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bk201-/jira-prepare-commit-msg"
+    "url": "https://github.com/floydspace/jira-prepare-conventional-commit-msg"
   },
   "license": "MIT",
   "dependencies": {

@@ -5,13 +5,13 @@ export function debug(message: string): void {
     return;
   }
 
-  console.log(`JIRA prepare commit msg > DEBUG: ${message}`);
+  console.log(`JIRA prepare conventional commit msg > DEBUG: ${message}`);
 }
 
 export function log(message: string): void {
-  console.log(`JIRA prepare commit msg > ${message}`);
+  console.log(`JIRA prepare conventional commit msg > ${message}`);
 }
 
 export function error(err: string): void {
-  console.error(`JIRA prepare commit msg > ${err}`);
+  console.error(`JIRA prepare conventional commit msg > ${err}`);
 }

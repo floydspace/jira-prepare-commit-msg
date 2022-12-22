@@ -1,1 +1,1 @@
-{"isConventionalCommit":true,"messagePattern":"[$J]. $M","gitRoot":"./.git"}
+{"jiraTicketPattern":"([A-Z]{4}-\\d{4})"}
