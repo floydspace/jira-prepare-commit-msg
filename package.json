@@ -11,6 +11,7 @@
   "scripts": {
     "build": "npx projen build",
     "bump": "npx projen bump",
+    "clear": "npx projen clear",
     "compile": "npx projen compile",
     "default": "npx projen default",
     "eject": "npx projen eject",
@@ -20,8 +21,10 @@
     "post-compile": "npx projen post-compile",
     "post-upgrade": "npx projen post-upgrade",
     "pre-compile": "npx projen pre-compile",
+    "publish": "npx projen publish",
     "release": "npx projen release",
     "test": "npx projen test",
+    "type-check": "npx projen type-check",
     "unbump": "npx projen unbump",
     "upgrade": "npx projen upgrade",
     "watch": "npx projen watch",
@@ -36,6 +39,7 @@
     "@typescript-eslint/eslint-plugin": "^5",
     "@typescript-eslint/parser": "^5",
     "ava": "*",
+    "esbuild": "^0.16.10",
     "eslint": "^8",
     "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-node": "^0.3.6",
@@ -68,7 +72,7 @@
   "main": "lib/index.js",
   "license": "MIT",
   "homepage": "https://github.com/floydspace/jira-prepare-conventional-commit-msg",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "types": "lib/index.d.ts",
   "ava": {
     "extensions": [

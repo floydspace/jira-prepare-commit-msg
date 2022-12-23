@@ -41,12 +41,20 @@
       ],
       "condition": "! git log --oneline -1 | grep -q \"chore(release):\""
     },
+    "clear": {
+      "name": "clear",
+      "steps": [
+        {
+          "exec": "rimraf lib dist"
+        }
+      ]
+    },
     "compile": {
       "name": "compile",
       "description": "Only compile",
       "steps": [
         {
-          "exec": "tsc --build"
+          "exec": "esbuild --bundle --minify src/index.ts --platform=node --packages=external --outdir=lib"
         }
       ]
     },
@@ -96,7 +104,7 @@
           "exec": "cd ./test/husky5 && git init && git checkout -b JIRA-4321-test-husky5 && npm i --no-package-lock"
         },
         {
-          "exec": "npx ava test/test.ts"
+          "exec": "ava test/test.ts"
         },
         {
           "exec": "cd ./test/husky2 && rimraf .git && rimraf node_modules"
@@ -114,7 +122,15 @@
     },
     "package": {
       "name": "package",
-      "description": "Creates the distribution package"
+      "description": "Creates the distribution package",
+      "steps": [
+        {
+          "exec": "mkdir -p dist/js"
+        },
+        {
+          "exec": "mv $(npm pack) dist/js/"
+        }
+      ]
     },
     "post-compile": {
       "name": "post-compile",
@@ -129,7 +145,24 @@
       "description": "Prepare the project for compilation",
       "steps": [
         {
-          "exec": "rimraf lib"
+          "spawn": "clear"
+        },
+        {
+          "spawn": "type-check"
+        },
+        {
+          "spawn": "eslint"
+        }
+      ]
+    },
+    "publish": {
+      "name": "publish",
+      "steps": [
+        {
+          "spawn": "build"
+        },
+        {
+          "exec": "npm publish dist/js/jira-prepare-conventional-commit-msg-1.0.0.tgz"
         }
       ]
     },
@@ -162,7 +195,15 @@
       "description": "Run tests",
       "steps": [
         {
-          "spawn": "eslint"
+          "say": "No unit tests yet"
+        }
+      ]
+    },
+    "type-check": {
+      "name": "type-check",
+      "steps": [
+        {
+          "exec": "tsc --noEmit --project tsconfig.dev.json"
         }
       ]
     },

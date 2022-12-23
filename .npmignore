@@ -16,3 +16,9 @@ dist
 /.projenrc.js
 tsconfig.tsbuildinfo
 /.eslintrc.json
+.editorconfig
+.gitattributes
+.nvmrc
+.prettierignore
+.prettierrc.json
+.projenrc.ts
