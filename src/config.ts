@@ -43,13 +43,11 @@ export async function loadConfig(configPath?: string): Promise<JPCMConfig> {
     debug(`Loaded config: ${JSON.stringify(config)}`);
 
     if (config && !config.isEmpty) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const result = { ...defaultConfig, ...config.config };
       debug(`Used config: ${JSON.stringify(result)}`);
       return result as JPCMConfig;
     }
   } catch (err) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     error(`Loading configuration failed with error: ${err}`);
   }
 

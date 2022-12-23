@@ -1,7 +1,7 @@
-import test, { ExecutionContext } from 'ava';
+import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as childProcess from 'child_process';
+import test, { ExecutionContext } from 'ava';
 import { JPCMConfig } from '../src/config';
 
 interface CommitMessageToTest {
@@ -153,7 +153,7 @@ async function testCommitMessage(
   t.is(index2, true, `Log doesn't contain correct message. Expected message: ${commitMessageToTest.expectedMessage}`);
 
   await exec(`git checkout -- ${path.join(cwd, '.jirapreparecommitmsgrc')}`, __dirname, t);
-  await exec(`git update-ref -d HEAD`, cwd, t);
+  await exec('git update-ref -d HEAD', cwd, t);
 }
 
 test('husky2 JIRA ticket ID should be in commit message', async (t: ExecutionContext) => {

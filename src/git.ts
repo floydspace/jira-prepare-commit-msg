@@ -1,6 +1,6 @@
+import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as cp from 'child_process';
 import { JPCMConfig } from './config';
 import { debug } from './log';
 
@@ -68,7 +68,7 @@ function insertJiraTicketIntoMessage(message: string, jiraTicket: string, config
       if (config.allowEmptyCommitMessage) {
         lines.unshift(preparedMessage);
       } else {
-        debug(`Commit message is empty. Skipping...`);
+        debug('Commit message is empty. Skipping...');
       }
     }
 
@@ -90,6 +90,7 @@ function insertJiraTicketIntoMessage(message: string, jiraTicket: string, config
     if (!match) {
       match = `chore: ${line}`;
       type = 'chore';
+      scope = '';
       msg = line;
     }
 

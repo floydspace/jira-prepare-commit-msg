@@ -7,7 +7,7 @@
   },
   "husky": {
     "hooks": {
-      "prepare-commit-msg": "node ../../bin/index.js --verbose"
+      "prepare-commit-msg": "node ../../lib/index.js --verbose"
     }
   }
 }
