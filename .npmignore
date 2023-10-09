@@ -5,7 +5,6 @@
 /test/
 /tsconfig.dev.json
 /src/
-!/lib/
 !/lib/**/*.js
 !/lib/**/*.d.ts
 dist
@@ -16,6 +15,7 @@ dist
 /.projenrc.js
 tsconfig.tsbuildinfo
 /.eslintrc.json
+!/lib/
 .editorconfig
 .gitattributes
 .nvmrc

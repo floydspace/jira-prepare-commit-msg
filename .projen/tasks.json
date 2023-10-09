@@ -41,6 +41,33 @@
       ],
       "condition": "! git log --oneline -1 | grep -q \"chore(release):\""
     },
+    "bundle": {
+      "name": "bundle",
+      "description": "Prepare assets",
+      "steps": [
+        {
+          "spawn": "bundle:index"
+        }
+      ]
+    },
+    "bundle:index": {
+      "name": "bundle:index",
+      "description": "Create a JavaScript bundle from src/index.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/index.ts --target=\"node12\" --platform=\"node\" --outfile=\"lib/index.js\" --external:cosmiconfig"
+        }
+      ]
+    },
+    "bundle:index:watch": {
+      "name": "bundle:index:watch",
+      "description": "Continuously update the JavaScript bundle from src/index.ts",
+      "steps": [
+        {
+          "exec": "esbuild --bundle src/index.ts --target=\"node12\" --platform=\"node\" --outfile=\"lib/index.js\" --external:cosmiconfig --watch"
+        }
+      ]
+    },
     "clear": {
       "name": "clear",
       "steps": [
@@ -54,7 +81,7 @@
       "description": "Only compile",
       "steps": [
         {
-          "exec": "esbuild --bundle --minify src/index.ts --platform=node --packages=external --outdir=lib"
+          "spawn": "bundle"
         }
       ]
     },

@@ -11,6 +11,9 @@
   "scripts": {
     "build": "npx projen build",
     "bump": "npx projen bump",
+    "bundle": "npx projen bundle",
+    "bundle:index": "npx projen bundle:index",
+    "bundle:index:watch": "npx projen bundle:index:watch",
     "clear": "npx projen clear",
     "compile": "npx projen compile",
     "default": "npx projen default",

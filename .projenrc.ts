@@ -17,7 +17,7 @@ const project = new TypeScriptProject({
   repository: `https://github.com/floydspace/${name}`,
   bin: { [name]: 'lib/index.js' },
   deps: ['cosmiconfig'],
-  devDeps: ['ava', 'rimraf', 'esbuild'],
+  devDeps: ['ava', 'rimraf'],
   packageManager: NodePackageManager.NPM,
   jest: false,
   github: false,
@@ -37,9 +37,20 @@ const project = new TypeScriptProject({
       trailingComma: TrailingComma.ALL,
     },
   },
+  bundlerOptions: {
+    addToPreCompile: false,
+    assetsDir: 'lib',
+  },
 });
 
 project.eslint?.addExtends('eslint:recommended', 'plugin:@typescript-eslint/recommended');
+
+project.bundler.addBundle('src/index.ts', {
+  platform: 'node',
+  target: 'node12',
+  outfile: '../index.js',
+  externals: ['cosmiconfig'],
+});
 
 const clearTask = project.addTask('clear', {
   exec: 'rimraf lib dist',
@@ -51,7 +62,9 @@ const typeCheckTask = project.addTask('type-check', {
 project.preCompileTask.spawn(clearTask);
 project.preCompileTask.spawn(typeCheckTask);
 project.preCompileTask.spawn(project.tasks.tryFind('eslint')!); // eslint-disable-line @typescript-eslint/no-non-null-assertion
-project.compileTask.reset('esbuild --bundle --minify src/index.ts --platform=node --packages=external --outdir=lib');
+// project.compileTask.reset('esbuild --bundle --minify src/index.ts --platform=node --packages=external --outdir=lib');
+project.compileTask.reset();
+project.compileTask.spawn(project.bundler.bundleTask);
 
 project.testTask.reset();
 project.testTask.say('No unit tests yet');
